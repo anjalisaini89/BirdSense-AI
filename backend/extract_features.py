@@ -36,3 +36,45 @@ def extract_mfcc(audio):
     )
 
     return mfcc
+
+def build_dataset():
+
+    files = get_audio_files(DATASET_DIR)
+
+    X = []
+    y = []
+
+    labels = {}
+
+    current_label = 0
+
+    for file in tqdm(files):
+
+        species = file.parent.name
+
+        if species not in labels:
+            labels[species] = current_label
+            current_label += 1
+
+        audio = load_audio(file)
+
+        mfcc = extract_mfcc(audio)
+
+        X.append(mfcc)
+
+        y.append(labels[species])
+
+    X = np.array(X)
+    y = np.array(y)
+
+    FEATURES_DIR.mkdir(exist_ok=True)
+
+    np.savez(
+        FEATURES_DIR / "dataset.npz",
+        X=X,
+        y=y
+    )
+
+    print("\nSaved dataset!")
+    print("Samples :", X.shape)
+    print("Labels :", y.shape)

@@ -78,3 +78,6 @@ def build_dataset():
     print("\nSaved dataset!")
     print("Samples :", X.shape)
     print("Labels :", y.shape)
+
+    if __name__ == "__main__":
+    build_dataset()

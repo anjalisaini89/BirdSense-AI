@@ -26,3 +26,13 @@ def load_audio(file_path):
         )
 
     return audio
+
+def extract_mfcc(audio):
+
+    mfcc = librosa.feature.mfcc(
+        y=audio,
+        sr=SAMPLE_RATE,
+        n_mfcc=N_MFCC
+    )
+
+    return mfcc

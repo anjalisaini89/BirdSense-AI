@@ -1,13 +1,13 @@
 import numpy as np
 import librosa
-
-from pathlib import Path
 from tqdm import tqdm
 
 from config import DATASET_DIR, FEATURES_DIR, SAMPLE_RATE, DURATION, N_MFCC
 from utils import get_audio_files
 
+
 def load_audio(file_path):
+    """Load and standardize an audio file to a fixed duration."""
 
     audio, sr = librosa.load(
         file_path,
@@ -27,7 +27,9 @@ def load_audio(file_path):
 
     return audio
 
+
 def extract_mfcc(audio):
+    """Extract MFCC features from audio."""
 
     mfcc = librosa.feature.mfcc(
         y=audio,
@@ -37,7 +39,9 @@ def extract_mfcc(audio):
 
     return mfcc
 
+
 def build_dataset():
+    """Process all audio files and create the feature dataset."""
 
     files = get_audio_files(DATASET_DIR)
 
@@ -45,8 +49,10 @@ def build_dataset():
     y = []
 
     labels = {}
-
     current_label = 0
+
+    print(f"Found {len(files)} audio files.")
+    print("Extracting MFCC features...\n")
 
     for file in tqdm(files):
 
@@ -61,7 +67,6 @@ def build_dataset():
         mfcc = extract_mfcc(audio)
 
         X.append(mfcc)
-
         y.append(labels[species])
 
     X = np.array(X)
@@ -75,9 +80,14 @@ def build_dataset():
         y=y
     )
 
-    print("\nSaved dataset!")
-    print("Samples :", X.shape)
-    print("Labels :", y.shape)
+    print("\n" + "=" * 50)
+    print("Dataset processing complete!")
+    print("=" * 50)
 
-   if __name__ == "__main__":
+    print("Samples :", X.shape)
+    print("Labels  :", y.shape)
+    print("Species :", len(labels))
+
+
+if __name__ == "__main__":
     build_dataset()

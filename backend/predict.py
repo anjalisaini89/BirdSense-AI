@@ -1,19 +1,47 @@
+import sys
+import json
 import numpy as np
 import librosa
-import json
+import tensorflow as tf
 
 from pathlib import Path
-from tensorflow.keras.models import load_model
 
 from config import SAMPLE_RATE, DURATION, N_MFCC
 
 
 # ============================================================
-# Configuration
+# Paths
 # ============================================================
 
-MODEL_PATH = Path("models/bird_classifier.keras")
-LABEL_PATH = Path("features/label_mapping.json")
+BASE_DIR = Path(__file__).resolve().parent
+
+MODEL_PATH = BASE_DIR / "models" / "bird_classifier.keras"
+LABELS_PATH = BASE_DIR / "features" / "labels.json"
+
+
+# ============================================================
+# Load Model
+# ============================================================
+
+print("Loading BirdSense-AI model...")
+
+model = tf.keras.models.load_model(MODEL_PATH)
+
+print("Model loaded successfully!")
+
+
+# ============================================================
+# Load Labels
+# ============================================================
+
+with open(LABELS_PATH, "r") as file:
+    labels = json.load(file)
+
+# Convert string keys to integers
+labels = {
+    int(key): value
+    for key, value in labels.items()
+}
 
 
 # ============================================================
@@ -62,48 +90,54 @@ def extract_mfcc(audio):
 # Predict Bird
 # ============================================================
 
-def predict_bird(audio_file):
+def predict_bird(file_path):
 
-    print("\nLoading model...")
-
-    model = load_model(MODEL_PATH)
-
-    print("Model loaded successfully!")
-
-    # Load labels
-    with open(LABEL_PATH, "r") as file:
-        label_mapping = json.load(file)
-
-    # Load audio
     print("\nProcessing audio...")
 
-    audio = load_audio(audio_file)
+    audio = load_audio(file_path)
 
-    # Extract MFCC
     mfcc = extract_mfcc(audio)
 
-    # Add batch and channel dimensions
-    X = mfcc[np.newaxis, ..., np.newaxis]
+    # Add channel dimension
+    mfcc = mfcc[np.newaxis, ..., np.newaxis]
 
-    # Prediction
-    predictions = model.predict(X, verbose=0)
+    # Model prediction
+    predictions = model.predict(
+        mfcc,
+        verbose=0
+    )
 
-    predicted_index = np.argmax(predictions[0])
+    probabilities = predictions[0]
 
-    confidence = predictions[0][predicted_index] * 100
+    predicted_index = np.argmax(probabilities)
 
-    species = label_mapping[str(predicted_index)]
+    predicted_species = labels[predicted_index]
+
+    confidence = probabilities[predicted_index] * 100
 
     print("\n" + "=" * 60)
     print("BirdSense-AI Prediction")
     print("=" * 60)
 
-    print(f"\nPredicted Bird : {species}")
-    print(f"Confidence     : {confidence:.2f}%")
+    print(f"\nBird Species : {predicted_species}")
+    print(f"Confidence   : {confidence:.2f}%")
+
+    # Top 5 predictions
+    top_indices = np.argsort(probabilities)[-5:][::-1]
+
+    print("\nTop 5 Predictions:")
+    print("-" * 60)
+
+    for index in top_indices:
+
+        species = labels[index]
+        probability = probabilities[index] * 100
+
+        print(
+            f"{species:<40} {probability:.2f}%"
+        )
 
     print("=" * 60)
-
-    return species, confidence
 
 
 # ============================================================
@@ -112,16 +146,26 @@ def predict_bird(audio_file):
 
 if __name__ == "__main__":
 
-    audio_file = input(
-        "\nEnter path to bird audio file: "
-    ).strip()
+    if len(sys.argv) < 2:
 
-    audio_path = Path(audio_file)
+        print("\nUsage:")
+        print("python predict.py <audio_file>")
 
-    if not audio_path.exists():
+        print("\nExample:")
+        print(
+            "python predict.py "
+            "dataset/Voice of Birds/Andean Guan_sound/example.wav"
+        )
 
-        print("\nError: Audio file not found.")
+        sys.exit(1)
 
-    else:
+    audio_file = Path(sys.argv[1])
 
-        predict_bird(audio_path)
+    if not audio_file.exists():
+
+        print(f"\nError: File not found:")
+        print(audio_file)
+
+        sys.exit(1)
+
+    predict_bird(audio_file)

@@ -37,7 +37,6 @@ print("Model loaded successfully!")
 with open(LABELS_PATH, "r") as file:
     labels = json.load(file)
 
-# Convert string keys to integers
 labels = {
     int(key): value
     for key, value in labels.items()
@@ -94,11 +93,13 @@ def predict_bird(file_path):
 
     print("\nProcessing audio...")
 
+    # Load audio
     audio = load_audio(file_path)
 
+    # Extract MFCC
     mfcc = extract_mfcc(audio)
 
-    # Add channel dimension
+    # Add batch and channel dimensions
     mfcc = mfcc[np.newaxis, ..., np.newaxis]
 
     # Model prediction
@@ -109,11 +110,37 @@ def predict_bird(file_path):
 
     probabilities = predictions[0]
 
-    predicted_index = np.argmax(probabilities)
+    # Get predicted class
+    predicted_index = int(np.argmax(probabilities))
 
     predicted_species = labels[predicted_index]
 
-    confidence = probabilities[predicted_index] * 100
+    confidence = float(probabilities[predicted_index] * 100)
+
+    # ========================================================
+    # Top 5 Predictions
+    # ========================================================
+
+    top_indices = np.argsort(probabilities)[-5:][::-1]
+
+    top_predictions = []
+
+    for index in top_indices:
+
+        index = int(index)
+
+        species = labels[index]
+
+        probability = float(probabilities[index] * 100)
+
+        top_predictions.append({
+            "species": species,
+            "confidence": round(probability, 2)
+        })
+
+    # ========================================================
+    # Console Output
+    # ========================================================
 
     print("\n" + "=" * 60)
     print("BirdSense-AI Prediction")
@@ -122,22 +149,27 @@ def predict_bird(file_path):
     print(f"\nBird Species : {predicted_species}")
     print(f"Confidence   : {confidence:.2f}%")
 
-    # Top 5 predictions
-    top_indices = np.argsort(probabilities)[-5:][::-1]
-
     print("\nTop 5 Predictions:")
     print("-" * 60)
 
-    for index in top_indices:
-
-        species = labels[index]
-        probability = probabilities[index] * 100
+    for prediction in top_predictions:
 
         print(
-            f"{species:<40} {probability:.2f}%"
+            f"{prediction['species']:<40} "
+            f"{prediction['confidence']:.2f}%"
         )
 
     print("=" * 60)
+
+    # ========================================================
+    # RETURN RESULT TO FASTAPI
+    # ========================================================
+
+    return {
+        "species": predicted_species,
+        "confidence": round(confidence, 2),
+        "top_predictions": top_predictions
+    }
 
 
 # ============================================================
@@ -154,7 +186,8 @@ if __name__ == "__main__":
         print("\nExample:")
         print(
             "python predict.py "
-            "dataset/Voice of Birds/Andean Guan_sound/example.wav"
+            "dataset/Voice of Birds/Voice of Birds/"
+            "Andean Guan_sound/Andean Guan10.mp3"
         )
 
         sys.exit(1)
@@ -163,7 +196,7 @@ if __name__ == "__main__":
 
     if not audio_file.exists():
 
-        print(f"\nError: File not found:")
+        print("\nError: File not found:")
         print(audio_file)
 
         sys.exit(1)

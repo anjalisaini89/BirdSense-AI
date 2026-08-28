@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 const API_URL = "http://127.0.0.1:8000";
@@ -16,6 +16,20 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [audioUrl, setAudioUrl] = useState("");
+  useEffect(() => {
+  if (!file) {
+    setAudioUrl("");
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  setAudioUrl(url);
+
+  return () => {
+    URL.revokeObjectURL(url);
+  };
+}, [file]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -134,6 +148,14 @@ function App() {
                 </>
               )}
             </label>
+            {file && (
+  <audio controls className="audio-player">
+    <source
+      src={URL.createObjectURL(file)}
+      type={file.type}
+    />
+  </audio>
+)}
           </div>
 
           <button
@@ -170,7 +192,7 @@ function App() {
                   IDENTIFICATION RESULT
                 </span>
 
-                <h2>{result.species}</h2>
+                <h2>{cleanSpeciesName(result.species)}</h2>
               </div>
 
               <div className="confidence">
@@ -204,7 +226,7 @@ function App() {
                   </div>
 
                   <div className="prediction-name">
-                    {prediction.species}
+                    {cleanSpeciesName(prediction.species)}
                   </div>
 
                   <div className="prediction-progress">

@@ -151,7 +151,7 @@ function App() {
             {file && (
   <audio controls className="audio-player">
     <source
-      src={URL.createObjectURL(file)}
+      src={audioUrl}
       type={file.type}
     />
   </audio>

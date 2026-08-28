@@ -148,13 +148,13 @@ function App() {
                 </>
               )}
             </label>
-            {file && (
-  <audio controls className="audio-player">
-    <source
-      src={audioUrl}
-      type={file.type}
-    />
-  </audio>
+            {file && audioUrl && (
+  <audio
+    controls
+    preload="metadata"
+    className="audio-player"
+    src={audioUrl}
+  />
 )}
           </div>
 

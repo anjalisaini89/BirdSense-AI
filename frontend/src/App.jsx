@@ -3,6 +3,14 @@ import "./App.css";
 
 const API_URL = "http://127.0.0.1:8000";
 
+const cleanSpeciesName = (name) => {
+  return name
+    .replace("_sound", "")
+    .replaceAll("_", " ")
+    .replace("Darwins", "Darwin's")
+    .trim();
+};
+
 function App() {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);

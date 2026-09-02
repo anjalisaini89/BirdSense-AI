@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 DATASET_DIR = BASE_DIR / "dataset"
 FEATURES_DIR = BASE_DIR / "features"
-MODELS_DIR = BASE_DIR / "saved_models"
+MODELS_DIR = BASE_DIR / "models"
 UPLOADS_DIR = BASE_DIR / "uploads"
 
 # ===============================

@@ -93,15 +93,16 @@ def build_dataset():
             y.append(labels[species])
 
         except Exception as error:
-    print(f"\nFailed to process: {file}")
-    print(f"Error: {repr(error)}")
 
-    failed_files.append({
-        "file": str(file),
-        "error": repr(error)
-    })
+            print(f"\nFailed to process: {file}")
+            print(f"Error: {repr(error)}")
 
-    continue
+            failed_files.append({
+                "file": str(file),
+                "error": repr(error)
+            })
+
+            continue
 
     # Convert lists to NumPy arrays
     X = np.array(X, dtype=np.float32)

@@ -14,8 +14,8 @@ MODELS_DIR = BASE_DIR / "models"
 
 DATASET_FILE = FEATURES_DIR / "dataset_v4.npz"
 
-MODEL_FILE = MODELS_DIR / "bird_classifier_v4.keras"
-HISTORY_FILE = MODELS_DIR / "training_history_v4.json"
+MODEL_FILE = MODELS_DIR / "bird_classifier_v5.keras"
+HISTORY_FILE = MODELS_DIR / "training_history_v5.json"
 
 EPOCHS = 30
 BATCH_SIZE = 32
@@ -25,7 +25,7 @@ RANDOM_STATE = 42
 def load_dataset():
 
     print("=" * 60)
-    print("BirdSense-AI V4 Dataset")
+    print("BirdSense-AI V5 Dataset")
     print("=" * 60)
 
     data = np.load(DATASET_FILE)
@@ -288,6 +288,79 @@ def train():
         num_classes
     ) = prepare_data(X, y)
 
+    # ============================================================
+    # V5: Normalize Log-Mel features using TRAINING data only
+    # ============================================================
+
+    print(
+        "\nNormalizing features using training data statistics..."
+    )
+
+    train_mean = np.mean(
+        X_train,
+        axis=(0, 1, 2),
+        keepdims=True
+    )
+
+    train_std = np.std(
+        X_train,
+        axis=(0, 1, 2),
+        keepdims=True
+    )
+
+    # Prevent division by zero
+    train_std = np.maximum(
+        train_std,
+        1e-8
+    )
+
+    # Normalize all datasets using ONLY training statistics
+    X_train = (
+        X_train - train_mean
+    ) / train_std
+
+    X_val = (
+        X_val - train_mean
+    ) / train_std
+
+    X_test = (
+        X_test - train_mean
+    ) / train_std
+
+    print(
+        f"Training mean before normalization : "
+        f"{float(train_mean.squeeze()):.4f}"
+    )
+
+    print(
+        f"Training std before normalization  : "
+        f"{float(train_std.squeeze()):.4f}"
+    )
+
+    print(
+        f"\nX_train mean after normalization  : "
+        f"{X_train.mean():.4f}"
+    )
+
+    print(
+        f"X_train std after normalization   : "
+        f"{X_train.std():.4f}"
+    )
+
+    print(
+        f"X_val mean after normalization    : "
+        f"{X_val.mean():.4f}"
+    )
+
+    print(
+        f"X_test mean after normalization   : "
+        f"{X_test.mean():.4f}"
+    )
+
+    # ============================================================
+    # Encode labels
+    # ============================================================
+
     y_train_encoded = tf.keras.utils.to_categorical(
         y_train,
         num_classes=num_classes
@@ -303,9 +376,17 @@ def train():
         num_classes=num_classes
     )
 
+    # ============================================================
+    # Class weights
+    # ============================================================
+
     class_weights = calculate_class_weights(
         y_train
     )
+
+    # ============================================================
+    # Build model
+    # ============================================================
 
     model = build_model(
         X_train.shape[1:],
@@ -319,6 +400,10 @@ def train():
     MODELS_DIR.mkdir(
         exist_ok=True
     )
+
+    # ============================================================
+    # Callbacks
+    # ============================================================
 
     checkpoint = tf.keras.callbacks.ModelCheckpoint(
 
@@ -342,9 +427,13 @@ def train():
         verbose=1
     )
 
+    # ============================================================
+    # Training
+    # ============================================================
+
     print("\n")
     print("=" * 60)
-    print("Starting V4 Training")
+    print("Starting V5 Training")
     print("=" * 60)
 
     history = model.fit(
@@ -372,9 +461,13 @@ def train():
         verbose=1
     )
 
+    # ============================================================
+    # Evaluation
+    # ============================================================
+
     print("\n")
     print("=" * 60)
-    print("Evaluating V4 Model")
+    print("Evaluating V5 Model")
     print("=" * 60)
 
     loss, accuracy = model.evaluate(
@@ -385,7 +478,7 @@ def train():
 
     print("\n")
     print("=" * 60)
-    print("BirdSense-AI V4 Results")
+    print("BirdSense-AI V5 Results")
     print("=" * 60)
 
     print(
@@ -398,6 +491,10 @@ def train():
 
     print("=" * 60)
 
+    # ============================================================
+    # Save training history
+    # ============================================================
+
     with open(
         HISTORY_FILE,
         "w"
@@ -409,7 +506,7 @@ def train():
             indent=4
         )
 
-    print("\nV4 model saved to:")
+    print("\nV5 model saved to:")
     print(MODEL_FILE)
 
     print("\nTraining history saved to:")

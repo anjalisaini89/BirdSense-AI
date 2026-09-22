@@ -15,7 +15,7 @@ from config import SAMPLE_RATE, DURATION, N_MFCC
 
 BASE_DIR = Path(__file__).resolve().parent
 
-MODEL_PATH = BASE_DIR / "models" / "bird_classifier.keras"
+MODEL_PATH = BASE_DIR / "models" / "bird_classifier_v6.keras"
 LABELS_PATH = BASE_DIR / "features" / "labels.json"
 
 

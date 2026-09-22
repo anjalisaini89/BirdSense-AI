@@ -6,7 +6,14 @@ import tensorflow as tf
 
 from pathlib import Path
 
-from config import SAMPLE_RATE, DURATION, N_MFCC
+from config import (
+    SAMPLE_RATE,
+    DURATION,
+    N_MFCC,
+    N_MELS,
+    HOP_LENGTH,
+    N_FFT
+)
 
 
 # ============================================================
@@ -23,11 +30,11 @@ LABELS_PATH = BASE_DIR / "features" / "labels.json"
 # Load Model
 # ============================================================
 
-print("Loading BirdSense-AI model...")
+print("Loading BirdSense-AI V6 model...")
 
 model = tf.keras.models.load_model(MODEL_PATH)
 
-print("Model loaded successfully!")
+print("V6 model loaded successfully!")
 
 
 # ============================================================
@@ -44,7 +51,7 @@ labels = {
 
 
 # ============================================================
-# Load Audio
+# Audio Loading
 # ============================================================
 
 def load_audio(file_path):
@@ -71,7 +78,7 @@ def load_audio(file_path):
 
 
 # ============================================================
-# Extract MFCC
+# MFCC Extraction
 # ============================================================
 
 def extract_mfcc(audio):
@@ -86,42 +93,135 @@ def extract_mfcc(audio):
 
 
 # ============================================================
-# Predict Bird
+# Log-Mel Spectrogram
+# Used for visualization only
+# ============================================================
+
+def extract_log_mel(audio):
+
+    mel = librosa.feature.melspectrogram(
+        y=audio,
+        sr=SAMPLE_RATE,
+        n_fft=N_FFT,
+        hop_length=HOP_LENGTH,
+        n_mels=N_MELS
+    )
+
+    log_mel = librosa.power_to_db(
+        mel,
+        ref=np.max
+    )
+
+    return log_mel
+
+
+# ============================================================
+# Prepare Visualization Data
+# ============================================================
+
+def prepare_visualization(log_mel):
+
+    # --------------------------------------------------------
+    # Limit precision to reduce JSON response size
+    # --------------------------------------------------------
+
+    spectrogram = np.round(
+        log_mel,
+        2
+    ).tolist()
+
+    # --------------------------------------------------------
+    # Time axis
+    # --------------------------------------------------------
+
+    time_axis = np.linspace(
+        0,
+        DURATION,
+        log_mel.shape[1]
+    )
+
+    # --------------------------------------------------------
+    # Frequency axis
+    # --------------------------------------------------------
+
+    frequency_axis = librosa.mel_frequencies(
+        n_mels=log_mel.shape[0],
+        fmin=0,
+        fmax=SAMPLE_RATE // 2
+    )
+
+    frequency_axis = np.round(
+        frequency_axis,
+        2
+    ).tolist()
+
+    return {
+        "spectrogram": spectrogram,
+        "time": np.round(time_axis, 3).tolist(),
+        "frequency": frequency_axis,
+        "sample_rate": SAMPLE_RATE,
+        "duration": DURATION,
+        "n_mels": N_MELS,
+        "hop_length": HOP_LENGTH
+    }
+
+
+# ============================================================
+# Bird Prediction
 # ============================================================
 
 def predict_bird(file_path):
 
     print("\nProcessing audio...")
 
+    # --------------------------------------------------------
     # Load audio
+    # --------------------------------------------------------
+
     audio = load_audio(file_path)
 
-    # Extract MFCC
+    # --------------------------------------------------------
+    # MFCC
+    # --------------------------------------------------------
+
     mfcc = extract_mfcc(audio)
 
-    # Add batch and channel dimensions
-    mfcc = mfcc[np.newaxis, ..., np.newaxis]
+    mfcc_input = mfcc[
+        np.newaxis,
+        ...,
+        np.newaxis
+    ]
 
-    # Model prediction
+    # --------------------------------------------------------
+    # V6 prediction
+    # --------------------------------------------------------
+
     predictions = model.predict(
-        mfcc,
+        mfcc_input,
         verbose=0
     )
 
     probabilities = predictions[0]
 
-    # Get predicted class
-    predicted_index = int(np.argmax(probabilities))
+    predicted_index = int(
+        np.argmax(probabilities)
+    )
 
-    predicted_species = labels[predicted_index]
+    predicted_species = labels[
+        predicted_index
+    ]
 
-    confidence = float(probabilities[predicted_index] * 100)
+    confidence = float(
+        probabilities[predicted_index] * 100
+    )
 
-    # ========================================================
-    # Top 5 Predictions
-    # ========================================================
+    # --------------------------------------------------------
+    # Top 5 predictions
+    # --------------------------------------------------------
 
-    top_indices = np.argsort(probabilities)[-5:][::-1]
+    top_indices = np.argsort(
+        probabilities
+    )[-5:][::-1]
 
     top_predictions = []
 
@@ -131,23 +231,45 @@ def predict_bird(file_path):
 
         species = labels[index]
 
-        probability = float(probabilities[index] * 100)
+        probability = float(
+            probabilities[index] * 100
+        )
 
-        top_predictions.append({
-            "species": species,
-            "confidence": round(probability, 2)
-        })
+        top_predictions.append(
+            {
+                "species": species,
+                "confidence": round(
+                    probability,
+                    2
+                )
+            }
+        )
 
-    # ========================================================
-    # Console Output
-    # ========================================================
+    # --------------------------------------------------------
+    # Visualization features
+    # --------------------------------------------------------
+
+    log_mel = extract_log_mel(audio)
+
+    visualization = prepare_visualization(
+        log_mel
+    )
+
+    # --------------------------------------------------------
+    # Terminal output
+    # --------------------------------------------------------
 
     print("\n" + "=" * 60)
     print("BirdSense-AI Prediction")
     print("=" * 60)
 
-    print(f"\nBird Species : {predicted_species}")
-    print(f"Confidence   : {confidence:.2f}%")
+    print(
+        f"\nBird Species : {predicted_species}"
+    )
+
+    print(
+        f"Confidence   : {confidence:.2f}%"
+    )
 
     print("\nTop 5 Predictions:")
     print("-" * 60)
@@ -155,25 +277,33 @@ def predict_bird(file_path):
     for prediction in top_predictions:
 
         print(
-            f"{prediction['species']:<40} "
+            f"{prediction['species']:<40}"
             f"{prediction['confidence']:.2f}%"
         )
 
     print("=" * 60)
 
-    # ========================================================
-    # RETURN RESULT TO FASTAPI
-    # ========================================================
+    # --------------------------------------------------------
+    # Return result
+    # --------------------------------------------------------
 
     return {
+
         "species": predicted_species,
-        "confidence": round(confidence, 2),
-        "top_predictions": top_predictions
+
+        "confidence": round(
+            confidence,
+            2
+        ),
+
+        "top_predictions": top_predictions,
+
+        "visualization": visualization
     }
 
 
 # ============================================================
-# Main
+# Command Line Usage
 # ============================================================
 
 if __name__ == "__main__":
@@ -181,24 +311,35 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
 
         print("\nUsage:")
-        print("python predict.py <audio_file>")
+        print(
+            "python predict.py <audio_file>"
+        )
 
         print("\nExample:")
+
         print(
             "python predict.py "
             "dataset/Voice of Birds/Voice of Birds/"
-            "Andean Guan_sound/Andean Guan10.mp3"
+            "Andean Guan_sound/"
+            "Andean Guan10.mp3"
         )
 
         sys.exit(1)
 
-    audio_file = Path(sys.argv[1])
+    audio_file = Path(
+        sys.argv[1]
+    )
 
     if not audio_file.exists():
 
-        print("\nError: File not found:")
+        print(
+            "\nError: File not found:"
+        )
+
         print(audio_file)
 
         sys.exit(1)
 
-    predict_bird(audio_file)
+    predict_bird(
+        audio_file
+    )

@@ -20,6 +20,7 @@ function App() {
   const [audioUrl, setAudioUrl] = useState("");
   const [visualMode, setVisualMode] = useState("3d");
 
+  // Create audio preview URL
   useEffect(() => {
     if (!file) {
       setAudioUrl("");
@@ -34,6 +35,7 @@ function App() {
     };
   }, [file]);
 
+  // Handle file selection
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
 
@@ -42,9 +44,9 @@ function App() {
     setFile(selectedFile);
     setResult(null);
     setError("");
-    setVisualMode("3d");
   };
 
+  // Send audio to FastAPI
   const handlePredict = async () => {
     if (!file) {
       setError("Please select an audio file first.");
@@ -82,10 +84,12 @@ function App() {
 
   return (
     <div className="app">
+
+      {/* Background */}
       <div className="background-glow glow-one"></div>
       <div className="background-glow glow-two"></div>
 
-      {/* NAVBAR */}
+      {/* Navbar */}
       <header className="navbar">
         <div className="logo">
           <span className="logo-icon">🐦</span>
@@ -104,8 +108,9 @@ function App() {
 
       <main className="main-content">
 
-        {/* HERO */}
+        {/* Hero */}
         <section className="hero">
+
           <div className="hero-badge">
             <span>✦</span>
             AI-POWERED BIRD IDENTIFICATION
@@ -121,10 +126,12 @@ function App() {
             Upload a bird recording and let BirdSense-AI
             analyze its acoustic signature using deep learning.
           </p>
+
         </section>
 
-        {/* UPLOAD / ANALYZER */}
+        {/* Upload / Analyzer */}
         <section className="analyzer-card">
+
           <div className="upload-area">
 
             <input
@@ -139,6 +146,7 @@ function App() {
               htmlFor="audio-upload"
               className={`upload-box ${file ? "has-file" : ""}`}
             >
+
               <div className="upload-icon">
                 {file ? "🎵" : "🎙️"}
               </div>
@@ -151,16 +159,20 @@ function App() {
               ) : (
                 <>
                   <h3>Drop your bird recording here</h3>
-                  <p>or click to browse your device</p>
+
+                  <p>
+                    or click to browse your device
+                  </p>
 
                   <span className="formats">
                     WAV • MP3 • OGG • FLAC • M4A
                   </span>
                 </>
               )}
+
             </label>
 
-            {/* AUDIO PREVIEW */}
+            {/* Audio Preview */}
             {file && audioUrl && (
               <audio
                 controls
@@ -169,14 +181,16 @@ function App() {
                 src={audioUrl}
               />
             )}
+
           </div>
 
-          {/* ANALYZE BUTTON */}
+          {/* Analyze Button */}
           <button
             className="analyze-button"
             onClick={handlePredict}
             disabled={!file || loading}
           >
+
             {loading ? (
               <>
                 <span className="spinner"></span>
@@ -188,23 +202,26 @@ function App() {
                 <span>→</span>
               </>
             )}
+
           </button>
 
-          {/* ERROR */}
+          {/* Error */}
           {error && (
             <div className="error-message">
               ⚠️ {error}
             </div>
           )}
+
         </section>
 
-        {/* RESULTS */}
+        {/* Prediction Results */}
         {result && (
           <section className="results">
 
             <div className="result-header">
 
               <div>
+
                 <span className="section-label">
                   IDENTIFICATION RESULT
                 </span>
@@ -212,32 +229,34 @@ function App() {
                 <h2>
                   {cleanSpeciesName(result.species)}
                 </h2>
+
               </div>
 
               <div className="confidence">
+
                 <span>CONFIDENCE</span>
 
                 <strong>
                   {result.confidence.toFixed(2)}%
                 </strong>
+
               </div>
 
             </div>
 
-            {/* MAIN CONFIDENCE BAR */}
+            {/* Main confidence bar */}
             <div className="confidence-bar">
+
               <div
                 className="confidence-fill"
                 style={{
-                  width: `${Math.min(
-                    result.confidence,
-                    100
-                  )}%`,
+                  width: `${Math.min(result.confidence, 100)}%`,
                 }}
               ></div>
+
             </div>
 
-            {/* TOP PREDICTIONS */}
+            {/* Top Predictions */}
             <div className="top-predictions">
 
               <div className="section-title">
@@ -247,6 +266,7 @@ function App() {
 
               {result.top_predictions.map(
                 (prediction, index) => (
+
                   <div
                     className="prediction-row"
                     key={`${prediction.species}-${index}`}
@@ -263,6 +283,7 @@ function App() {
                     </div>
 
                     <div className="prediction-progress">
+
                       <div
                         style={{
                           width: `${Math.min(
@@ -271,6 +292,7 @@ function App() {
                           )}%`,
                         }}
                       ></div>
+
                     </div>
 
                     <div className="prediction-confidence">
@@ -278,20 +300,24 @@ function App() {
                     </div>
 
                   </div>
+
                 )
               )}
 
             </div>
+
           </section>
         )}
 
-        {/* ACOUSTIC VISUALIZATION */}
+        {/* Acoustic Visualization */}
         {result?.visualization && (
           <section className="acoustic-visualization">
 
+            {/* Visualization Header */}
             <div className="visualization-header">
 
               <div>
+
                 <span className="section-label">
                   ACOUSTIC ANALYSIS
                 </span>
@@ -304,9 +330,10 @@ function App() {
                   Interactive frequency analysis generated
                   from the uploaded recording.
                 </p>
+
               </div>
 
-              {/* VISUALIZATION TOGGLE */}
+              {/* Toggle */}
               <div className="visualization-toggle">
 
                 <button
@@ -315,9 +342,7 @@ function App() {
                       ? "active"
                       : ""
                   }
-                  onClick={() =>
-                    setVisualMode("3d")
-                  }
+                  onClick={() => setVisualMode("3d")}
                 >
                   3D View
                 </button>
@@ -328,24 +353,19 @@ function App() {
                       ? "active"
                       : ""
                   }
-                  onClick={() =>
-                    setVisualMode("2d")
-                  }
+                  onClick={() => setVisualMode("2d")}
                 >
                   Spectrogram
                 </button>
 
               </div>
+
             </div>
 
-            {/* PLOT */}
+            {/* Plot */}
             <div className="plot-container">
 
               {visualMode === "3d" ? (
-
-                /* =========================
-                   3D ACOUSTIC SURFACE
-                   ========================= */
 
                 <Plot
                   data={[
@@ -361,6 +381,159 @@ function App() {
                       colorscale: "Viridis",
 
                       showscale: true,
+
+                      colorbar: {
+                        title: {
+                          text: "dB",
+                          font: {
+                            color: "#9db5a8",
+                          },
+                        },
+
+                        tickfont: {
+                          color: "#9db5a8",
+                        },
+                      },
+
+                      hovertemplate:
+                        "Time: %{x:.2f}s" +
+                        "<br>Frequency: %{y:.0f} Hz" +
+                        "<br>Intensity: %{z:.2f} dB" +
+                        "<extra></extra>",
+                    },
+                  ]}
+
+                  layout={{
+
+                    title: {
+                      text: "3D Acoustic Frequency Surface",
+
+                      font: {
+                        color: "#e8fff2",
+                        size: 18,
+                      },
+                    },
+
+                    paper_bgcolor:
+                      "rgba(0,0,0,0)",
+
+                    plot_bgcolor:
+                      "rgba(0,0,0,0)",
+
+                    scene: {
+
+                      bgcolor:
+                        "rgba(0,0,0,0)",
+
+                      xaxis: {
+                        title: {
+                          text: "Time (seconds)",
+
+                          font: {
+                            color: "#9db5a8",
+                            size: 13,
+                          },
+                        },
+
+                        color: "#9db5a8",
+
+                        gridcolor: "#1b3027",
+
+                        zerolinecolor:
+                          "#1b3027",
+                      },
+
+                      yaxis: {
+                        title: {
+                          text: "Frequency (Hz)",
+
+                          font: {
+                            color: "#9db5a8",
+                            size: 13,
+                          },
+                        },
+
+                        color: "#9db5a8",
+
+                        gridcolor: "#1b3027",
+
+                        zerolinecolor:
+                          "#1b3027",
+                      },
+
+                      zaxis: {
+                        title: {
+                          text: "Intensity (dB)",
+
+                          font: {
+                            color: "#9db5a8",
+                            size: 13,
+                          },
+                        },
+
+                        color: "#9db5a8",
+
+                        gridcolor: "#1b3027",
+
+                        zerolinecolor:
+                          "#1b3027",
+                      },
+
+                      camera: {
+                        eye: {
+                          x: 1.6,
+                          y: 1.6,
+                          z: 1.2,
+                        },
+                      },
+
+                    },
+
+                    margin: {
+                      l: 0,
+                      r: 0,
+                      t: 50,
+                      b: 0,
+                    },
+
+                    height: 600,
+
+                    font: {
+                      color: "#e8fff2",
+                    },
+
+                  }}
+
+                  config={{
+                    responsive: true,
+
+                    displaylogo: false,
+
+                    modeBarButtonsToRemove: [
+                      "lasso2d",
+                      "select2d",
+                    ],
+                  }}
+
+                  style={{
+                    width: "100%",
+                  }}
+                />
+
+              ) : (
+
+                <Plot
+                  data={[
+                    {
+                      type: "heatmap",
+
+                      z: result.visualization.spectrogram,
+
+                      x: result.visualization.time,
+
+                      y: result.visualization.frequency,
+
+                      colorscale: "Viridis",
 
                       colorbar: {
                         title: {
@@ -385,9 +558,9 @@ function App() {
                   ]}
 
                   layout={{
+
                     title: {
-                      text:
-                        "3D Acoustic Frequency Surface",
+                      text: "Bird Call Spectrogram",
 
                       font: {
                         color: "#e8fff2",
@@ -401,215 +574,32 @@ function App() {
                     plot_bgcolor:
                       "rgba(0,0,0,0)",
 
-                    scene: {
-
-                      bgcolor:
-                        "rgba(0,0,0,0)",
-
-                      /* TIME */
-                      xaxis: {
-                        title: {
-                          text:
-                            "Time (seconds)",
-
-                          font: {
-                            color:
-                              "#9db5a8",
-                            size: 13,
-                          },
-                        },
-
-                        color:
-                          "#9db5a8",
-
-                        gridcolor:
-                          "#1b3027",
-
-                        zerolinecolor:
-                          "#1b3027",
-                      },
-
-                      /* FREQUENCY */
-                      yaxis: {
-                        title: {
-                          text:
-                            "Frequency (Hz)",
-
-                          font: {
-                            color:
-                              "#9db5a8",
-                            size: 13,
-                          },
-                        },
-
-                        color:
-                          "#9db5a8",
-
-                        gridcolor:
-                          "#1b3027",
-
-                        zerolinecolor:
-                          "#1b3027",
-                      },
-
-                      /* INTENSITY */
-                      zaxis: {
-                        title: {
-                          text:
-                            "Intensity (dB)",
-
-                          font: {
-                            color:
-                              "#9db5a8",
-                            size: 13,
-                          },
-                        },
-
-                        color:
-                          "#9db5a8",
-
-                        gridcolor:
-                          "#1b3027",
-
-                        zerolinecolor:
-                          "#1b3027",
-                      },
-
-                      /* DEFAULT CAMERA */
-                      camera: {
-                        eye: {
-                          x: 1.6,
-                          y: 1.6,
-                          z: 1.2,
-                        },
-                      },
-                    },
-
-                    margin: {
-                      l: 0,
-                      r: 0,
-                      t: 50,
-                      b: 0,
-                    },
-
-                    height: 600,
-
-                    font: {
-                      color: "#e8fff2",
-                    },
-                  }}
-
-                  config={{
-                    responsive: true,
-
-                    displaylogo: false,
-
-                    modeBarButtonsToRemove: [
-                      "lasso2d",
-                      "select2d",
-                    ],
-                  }}
-
-                  style={{
-                    width: "100%",
-                  }}
-                />
-
-              ) : (
-
-                /* =========================
-                   2D SPECTROGRAM
-                   ========================= */
-
-                <Plot
-                  data={[
-                    {
-                      type: "heatmap",
-
-                      z: result.visualization.spectrogram,
-
-                      x: result.visualization.time,
-
-                      y: result.visualization.frequency,
-
-                      colorscale: "Viridis",
-
-                      colorbar: {
-                        title: {
-                          text: "dB",
-
-                          font: {
-                            color:
-                              "#9db5a8",
-                          },
-                        },
-
-                        tickfont: {
-                          color:
-                            "#9db5a8",
-                        },
-                      },
-
-                      hovertemplate:
-                        "Time: %{x:.2f}s" +
-                        "<br>Frequency: %{y:.0f} Hz" +
-                        "<br>Intensity: %{z:.2f} dB" +
-                        "<extra></extra>",
-                    },
-                  ]}
-
-                  layout={{
-                    title: {
-                      text:
-                        "Bird Call Spectrogram",
-
-                      font: {
-                        color:
-                          "#e8fff2",
-                        size: 18,
-                      },
-                    },
-
-                    paper_bgcolor:
-                      "rgba(0,0,0,0)",
-
-                    plot_bgcolor:
-                      "rgba(0,0,0,0)",
-
                     xaxis: {
                       title: {
-                        text:
-                          "Time (seconds)",
+                        text: "Time (seconds)",
 
                         font: {
-                          color:
-                            "#9db5a8",
+                          color: "#9db5a8",
                         },
                       },
 
-                      color:
-                        "#9db5a8",
+                      color: "#9db5a8",
 
-                      gridcolor:
-                        "#1b3027",
+                      gridcolor: "#1b3027",
                     },
 
                     yaxis: {
                       title: {
-                        text:
-                          "Frequency (Hz)",
+                        text: "Frequency (Hz)",
 
                         font: {
-                          color:
-                            "#9db5a8",
+                          color: "#9db5a8",
                         },
                       },
 
-                      color:
-                        "#9db5a8",
+                      color: "#9db5a8",
 
-                      gridcolor:
-                        "#1b3027",
+                      gridcolor: "#1b3027",
                     },
 
                     margin: {
@@ -622,9 +612,9 @@ function App() {
                     height: 550,
 
                     font: {
-                      color:
-                        "#e8fff2",
+                      color: "#e8fff2",
                     },
+
                   }}
 
                   config={{
@@ -642,7 +632,7 @@ function App() {
 
             </div>
 
-            {/* VISUALIZATION HELP */}
+            {/* Visualization Help */}
             <div className="visualization-help">
 
               <span>
@@ -666,7 +656,7 @@ function App() {
           </section>
         )}
 
-        {/* HOW IT WORKS */}
+        {/* How It Works */}
         <section className="how-it-works">
 
           <span className="section-label">
@@ -682,12 +672,14 @@ function App() {
               </div>
 
               <div>
+
                 <h3>Upload</h3>
 
                 <p>
                   Upload a recording of a bird
                   call or song.
                 </p>
+
               </div>
 
             </div>
@@ -699,12 +691,14 @@ function App() {
               </div>
 
               <div>
+
                 <h3>Analyze</h3>
 
                 <p>
                   BirdSense extracts acoustic
                   features using MFCCs.
                 </p>
+
               </div>
 
             </div>
@@ -716,12 +710,14 @@ function App() {
               </div>
 
               <div>
+
                 <h3>Identify</h3>
 
                 <p>
                   Our CNN model predicts the
                   most likely species.
                 </p>
+
               </div>
 
             </div>
@@ -732,14 +728,19 @@ function App() {
 
       </main>
 
-      {/* FOOTER */}
+      {/* Footer */}
       <footer>
-        <span>BirdSense-AI</span>
+
+        <span>
+          BirdSense-AI
+        </span>
 
         <span>
           Real-time acoustic intelligence for birds
         </span>
+
       </footer>
+
     </div>
   );
 }

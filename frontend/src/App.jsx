@@ -288,99 +288,216 @@ function App() {
             </div>
 
             <div className="plot-container">
+{visualMode === "3d" ? (
+  <Plot
+    data={[
+      {
+        type: "surface",
+        z: result.visualization.spectrogram,
+        x: result.visualization.time,
+        y: result.visualization.frequency,
+        colorscale: "Viridis",
+        showscale: true,
 
-              {visualMode === "3d" ? (
-                <Plot
-                  data={[
-                    {
-                      type: "surface",
-                      z: result.visualization.spectrogram,
-                      x: result.visualization.time,
-                      y: result.visualization.frequency,
-                      colorscale: "Viridis",
-                      showscale: true,
-                      colorbar: {
-                        title: "dB",
-                        titleside: "right",
-                      },
-                      hovertemplate:
-                        "Time: %{x:.2f}s" +
-                        "<br>Frequency: %{y:.0f} Hz" +
-                        "<br>Intensity: %{z:.2f} dB" +
-                        "<extra></extra>",
-                    },
-                  ]}
-                  layout={{
-                    title: {
-                      text: "3D Acoustic Frequency Surface",
-                      font: {
-                        color: "#e8fff2",
-                        size: 18,
-                      },
-                    },
+        colorbar: {
+          title: {
+            text: "dB",
+            font: {
+              color: "#9db5a8",
+            },
+          },
+          tickfont: {
+            color: "#9db5a8",
+          },
+        },
 
-                    paper_bgcolor: "rgba(0,0,0,0)",
-                    plot_bgcolor: "rgba(0,0,0,0)",
+        hovertemplate:
+          "Time: %{x:.2f}s" +
+          "<br>Frequency: %{y:.0f} Hz" +
+          "<br>Intensity: %{z:.2f} dB" +
+          "<extra></extra>",
+      },
+    ]}
 
-                    scene: {
-                      xaxis: {
-                        title: "Time (seconds)",
-                        color: "#9db5a8",
-                        gridcolor: "#1b3027",
-                        zerolinecolor: "#1b3027",
-                      },
+    layout={{
+      title: {
+        text: "3D Acoustic Frequency Surface",
+        font: {
+          color: "#e8fff2",
+          size: 18,
+        },
+      },
 
-                      yaxis: {
-                        title: "Frequency (Hz)",
-                        color: "#9db5a8",
-                        gridcolor: "#1b3027",
-                        zerolinecolor: "#1b3027",
-                      },
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
 
-                      zaxis: {
-                        title: "Intensity (dB)",
-                        color: "#9db5a8",
-                        gridcolor: "#1b3027",
-                        zerolinecolor: "#1b3027",
-                      },
+      scene: {
+        bgcolor: "rgba(0,0,0,0)",
 
-                      bgcolor: "rgba(0,0,0,0)",
+        xaxis: {
+          title: {
+            text: "Time (seconds)",
+            font: {
+              color: "#9db5a8",
+              size: 13,
+            },
+          },
+          color: "#9db5a8",
+          gridcolor: "#1b3027",
+          zerolinecolor: "#1b3027",
+        },
 
-                      camera: {
-                        eye: {
-                          x: 1.6,
-                          y: 1.6,
-                          z: 1.2,
-                        },
-                      },
-                    },
+        yaxis: {
+          title: {
+            text: "Frequency (Hz)",
+            font: {
+              color: "#9db5a8",
+              size: 13,
+            },
+          },
+          color: "#9db5a8",
+          gridcolor: "#1b3027",
+          zerolinecolor: "#1b3027",
+        },
 
-                    margin: {
-                      l: 0,
-                      r: 0,
-                      t: 50,
-                      b: 0,
-                    },
+        zaxis: {
+          title: {
+            text: "Intensity (dB)",
+            font: {
+              color: "#9db5a8",
+              size: 13,
+            },
+          },
+          color: "#9db5a8",
+          gridcolor: "#1b3027",
+          zerolinecolor: "#1b3027",
+        },
 
-                    height: 600,
+        camera: {
+          eye: {
+            x: 1.6,
+            y: 1.6,
+            z: 1.2,
+          },
+        },
+      },
 
-                    font: {
-                      color: "#e8fff2",
-                    },
-                  }}
-                  config={{
-                    responsive: true,
-                    displaylogo: false,
-                    modeBarButtonsToRemove: [
-                      "lasso2d",
-                      "select2d",
-                    ],
-                  }}
-                  style={{
-                    width: "100%",
-                  }}
-                />
-              ) : (
+      margin: {
+        l: 0,
+        r: 0,
+        t: 50,
+        b: 0,
+      },
+
+      height: 600,
+
+      font: {
+        color: "#e8fff2",
+      },
+    }}
+
+    config={{
+      responsive: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: [
+        "lasso2d",
+        "select2d",
+      ],
+    }}
+
+    style={{
+      width: "100%",
+    }}
+  />
+) : (
+  <Plot
+    data={[
+      {
+        type: "heatmap",
+        z: result.visualization.spectrogram,
+        x: result.visualization.time,
+        y: result.visualization.frequency,
+        colorscale: "Viridis",
+
+        colorbar: {
+          title: {
+            text: "dB",
+            font: {
+              color: "#9db5a8",
+            },
+          },
+          tickfont: {
+            color: "#9db5a8",
+          },
+        },
+
+        hovertemplate:
+          "Time: %{x:.2f}s" +
+          "<br>Frequency: %{y:.0f} Hz" +
+          "<br>Intensity: %{z:.2f} dB" +
+          "<extra></extra>",
+      },
+    ]}
+
+    layout={{
+      title: {
+        text: "Bird Call Spectrogram",
+        font: {
+          color: "#e8fff2",
+          size: 18,
+        },
+      },
+
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+
+      xaxis: {
+        title: {
+          text: "Time (seconds)",
+          font: {
+            color: "#9db5a8",
+          },
+        },
+        color: "#9db5a8",
+        gridcolor: "#1b3027",
+      },
+
+      yaxis: {
+        title: {
+          text: "Frequency (Hz)",
+          font: {
+            color: "#9db5a8",
+          },
+        },
+        color: "#9db5a8",
+        gridcolor: "#1b3027",
+      },
+
+      margin: {
+        l: 70,
+        r: 20,
+        t: 50,
+        b: 60,
+      },
+
+      height: 550,
+
+      font: {
+        color: "#e8fff2",
+      },
+    }}
+
+    config={{
+      responsive: true,
+      displaylogo: false,
+    }}
+
+    style={{
+      width: "100%",
+    }}
+  />
+)}
+               : (
                 <Plot
                   data={[
                     {

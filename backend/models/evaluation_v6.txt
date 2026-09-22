@@ -1,0 +1,153 @@
+
+============================================================
+BirdSense-AI V6 Evaluation
+============================================================
+
+Original Dataset
+----------------
+Features : (2158, 40, 216)
+Labels   : (2158,)
+
+Test Dataset
+------------
+Testing samples : 431
+Test classes    : 107
+
+Model
+-----
+C:\Users\Hp\OneDrive\Documents\GitHub\BirdSense-AI\backend\models\bird_classifier_v6.keras
+
+Evaluation Results
+------------------
+Accuracy   : 52.90%
+Macro F1   : 0.4695
+Weighted F1: 0.5247
+
+============================================================
+Per-Species Classification Report
+============================================================
+
+                                  precision    recall  f1-score   support
+
+               Andean Guan_sound       1.00      0.33      0.50         6
+            Andean Tinamou_sound       0.11      0.17      0.13         6
+    Australian Brushturkey_sound       1.00      0.67      0.80         6
+          Band-tailed Guan_sound       0.60      0.50      0.55         6
+            Barred Tinamou_sound       0.00      0.00      0.00         1
+         Bartletts Tinamou_sound       0.75      0.50      0.60         6
+                Baudo Guan_sound       0.40      0.67      0.50         3
+              Bearded Guan_sound       1.00      0.17      0.29         6
+        Berlepschs Tinamou_sound       0.29      0.67      0.40         3
+            Biak Scrubfowl_sound       0.50      1.00      0.67         2
+             Black Tinamou_sound       0.50      0.25      0.33         4
+  Black-billed Brushturkey_sound       1.00      0.25      0.40         4
+      Black-capped Tinamou_sound       0.44      0.67      0.53         6
+ Black-fronted Piping Guan_sound       0.00      0.00      0.00         2
+ Blue-throated Piping Guan_sound       0.11      0.17      0.13         6
+         Brazilian Tinamou_sound       0.60      0.50      0.55         6
+             Brown Tinamou_sound       0.67      0.33      0.44         6
+         Brushland Tinamou_sound       0.62      1.00      0.77         5
+    Buff-browed Chachalaca_sound       0.00      0.00      0.00         2
+                Cauca Guan_sound       0.33      0.33      0.33         6
+          Chaco Chachalaca_sound       1.00      0.83      0.91         6
+     Chestnut-bellied Guan_sound       1.00      1.00      1.00         2
+Chestnut-headed Chachalaca_sound       0.33      1.00      0.50         1
+Chestnut-winged Chachalaca_sound       1.00      0.33      0.50         6
+           Chilean Tinamou_sound       1.00      1.00      1.00         2
+             Choco Tinamou_sound       0.50      1.00      0.67         1
+         Cinereous Tinamou_sound       0.67      0.67      0.67         6
+      Collared Brushturkey_sound       0.67      1.00      0.80         4
+      Colombian Chachalaca_sound       1.00      0.50      0.67         6
+            Common Ostrich_sound       0.00      0.00      0.00         1
+              Crested Guan_sound       0.80      0.67      0.73         6
+      Curve-billed Tinamou_sound       0.00      0.00      0.00         2
+           Darwins Nothura_sound       1.00      0.25      0.40         4
+            Dusky Megapode_sound       0.67      0.33      0.44         6
+         Dusky-legged Guan_sound       0.80      0.67      0.73         6
+             Dwarf Tinamou_sound       0.56      0.83      0.67         6
+ East Brazilian Chachalaca_sound       0.67      0.80      0.73         5
+   Elegant Crested Tinamou_sound       0.75      1.00      0.86         3
+                       Emu_sound       0.25      0.67      0.36         3
+        Great Spotted Kiwi_sound       0.00      0.00      0.00         1
+             Great Tinamou_sound       1.00      0.33      0.50         6
+              Greater Rhea_sound       0.20      0.20      0.20         5
+              Grey Tinamou_sound       0.25      0.50      0.33         6
+    Grey-headed Chachalaca_sound       0.50      0.50      0.50         6
+       Grey-legged Tinamou_sound       0.50      0.50      0.50         2
+          Highland Tinamou_sound       1.00      0.50      0.67         6
+            Hooded Tinamou_sound       0.00      0.00      0.00         3
+            Huayco Tinamou_sound       1.00      0.50      0.67         2
+            Lesser Nothura_sound       0.33      0.50      0.40         2
+               Lesser Rhea_sound       0.00      0.00      0.00         1
+         Little Chachalaca_sound       0.50      0.83      0.62         6
+       Little Spotted Kiwi_sound       0.00      0.00      0.00         1
+            Little Tinamou_sound       0.60      0.50      0.55         6
+                     Maleo_sound       0.50      1.00      0.67         1
+                Malleefowl_sound       1.00      1.00      1.00         2
+               Marail Guan_sound       0.11      0.33      0.17         3
+       Melanesian Megapode_sound       0.29      1.00      0.44         2
+      Micronesian Megapode_sound       0.00      0.00      0.00         1
+         Moluccan Megapode_sound       0.00      0.00      0.00         1
+      New Guinea Scrubfowl_sound       1.00      1.00      1.00         1
+   North Island Brown Kiwi_sound       1.00      1.00      1.00         4
+        Northern Cassowary_sound       0.00      0.00      0.00         1
+              Okarito Kiwi_sound       0.33      1.00      0.50         1
+   Orange-footed Scrubfowl_sound       0.40      0.33      0.36         6
+            Ornate Tinamou_sound       0.00      0.00      0.00         2
+       Pale-browed Tinamou_sound       0.75      0.50      0.60         6
+       Philippine Megapode_sound       0.29      0.50      0.36         4
+          Plain Chachalaca_sound       0.50      0.33      0.40         6
+              Puna Tinamou_sound       1.00      0.50      0.67         2
+ Quebracho Crested Tinamou_sound       1.00      0.50      0.67         2
+    Red-billed Brushturkey_sound       0.00      0.00      0.00         1
+            Red-faced Guan_sound       0.33      0.20      0.25         5
+        Red-legged Tinamou_sound       0.60      0.50      0.55         6
+  Red-throated Piping Guan_sound       0.00      0.00      0.00         3
+        Red-winged Tinamou_sound       1.00      0.67      0.80         6
+ Rufous-bellied Chachalaca_sound       1.00      0.67      0.80         6
+  Rufous-headed Chachalaca_sound       0.75      0.50      0.60         6
+  Rufous-vented Chachalaca_sound       0.33      0.17      0.22         6
+             Rusty Tinamou_sound       0.38      1.00      0.55         3
+       Rusty-margined Guan_sound       0.40      0.67      0.50         6
+         Scaled Chachalaca_sound       0.67      1.00      0.80         4
+    Slaty-breasted Tinamou_sound       0.83      0.83      0.83         6
+      Small-billed Tinamou_sound       0.83      0.83      0.83         6
+          Solitary Tinamou_sound       0.67      0.33      0.44         6
+       Southern Brown Kiwi_sound       0.00      0.00      0.00         1
+        Southern Cassowary_sound       1.00      0.25      0.40         4
+       Speckled Chachalaca_sound       0.67      0.67      0.67         6
+                Spixs Guan_sound       0.50      0.17      0.25         6
+           Spotted Nothura_sound       0.40      1.00      0.57         6
+             Sula Megapode_sound       0.00      0.00      0.00         1
+      Taczanowskis Tinamou_sound       0.00      0.00      0.00         1
+           Tataupa Tinamou_sound       0.62      0.83      0.71         6
+    Tawny-breasted Tinamou_sound       0.50      0.33      0.40         6
+           Thicket Tinamou_sound       0.62      0.83      0.71         6
+           Tongan Megapode_sound       0.60      1.00      0.75         3
+         Undulated Tinamou_sound       1.00      1.00      1.00         6
+          Vanuatu Megapode_sound       1.00      1.00      1.00         1
+        Variegated Tinamou_sound       1.00      0.33      0.50         6
+       Wattled Brushturkey_sound       0.20      1.00      0.33         1
+   West Mexican Chachalaca_sound       0.60      0.50      0.55         6
+  White-bellied Chachalaca_sound       0.60      0.75      0.67         4
+     White-bellied Nothura_sound       0.50      0.17      0.25         6
+         White-browed Guan_sound       0.50      1.00      0.67         1
+        White-crested Guan_sound       0.67      1.00      0.80         2
+    White-throated Tinamou_sound       0.60      0.50      0.55         6
+         White-winged Guan_sound       0.00      0.00      0.00         4
+     Yellow-legged Tinamou_sound       1.00      0.83      0.91         6
+
+                       micro avg       0.53      0.53      0.53       431
+                       macro avg       0.53      0.52      0.48       431
+                    weighted avg       0.61      0.53      0.52       431
+
+
+============================================================
+Summary
+============================================================
+
+Accuracy   : 52.90%
+Macro F1   : 0.4695
+Weighted F1: 0.5247
+
+============================================================

@@ -498,26 +498,6 @@ function App() {
 
       </main>
       
-      {result && birdInfo[cleanSpeciesName(result.species)] && (
-  <section className="bird-info-card">
-    <h3>Bird Information</h3>
-
-    <p>
-      <strong>Habitat:</strong>{" "}
-      {birdInfo[cleanSpeciesName(result.species)].habitat}
-    </p>
-
-    <p>
-      <strong>Region:</strong>{" "}
-      {birdInfo[cleanSpeciesName(result.species)].region}
-    </p>
-
-    <p>
-      <strong>Conservation:</strong>{" "}
-      {birdInfo[cleanSpeciesName(result.species)].conservation}
-    </p>
-  </section>
-)}
       <footer>
         <span>BirdSense-AI</span>
         <span>Real-time acoustic intelligence for birds</span>

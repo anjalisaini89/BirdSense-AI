@@ -251,6 +251,213 @@ function App() {
           </section>
         )}
 
+                {result?.visualization && (
+          <section className="acoustic-visualization">
+
+            <div className="visualization-header">
+              <div>
+                <span className="section-label">
+                  ACOUSTIC ANALYSIS
+                </span>
+
+                <h2>
+                  Visualize the bird's acoustic signature
+                </h2>
+
+                <p>
+                  Interactive frequency analysis generated from
+                  the uploaded recording.
+                </p>
+              </div>
+
+              <div className="visualization-toggle">
+                <button
+                  className={visualMode === "3d" ? "active" : ""}
+                  onClick={() => setVisualMode("3d")}
+                >
+                  3D View
+                </button>
+
+                <button
+                  className={visualMode === "2d" ? "active" : ""}
+                  onClick={() => setVisualMode("2d")}
+                >
+                  Spectrogram
+                </button>
+              </div>
+            </div>
+
+            <div className="plot-container">
+
+              {visualMode === "3d" ? (
+                <Plot
+                  data={[
+                    {
+                      type: "surface",
+                      z: result.visualization.spectrogram,
+                      x: result.visualization.time,
+                      y: result.visualization.frequency,
+                      colorscale: "Viridis",
+                      showscale: true,
+                      colorbar: {
+                        title: "dB",
+                        titleside: "right",
+                      },
+                      hovertemplate:
+                        "Time: %{x:.2f}s" +
+                        "<br>Frequency: %{y:.0f} Hz" +
+                        "<br>Intensity: %{z:.2f} dB" +
+                        "<extra></extra>",
+                    },
+                  ]}
+                  layout={{
+                    title: {
+                      text: "3D Acoustic Frequency Surface",
+                      font: {
+                        color: "#e8fff2",
+                        size: 18,
+                      },
+                    },
+
+                    paper_bgcolor: "rgba(0,0,0,0)",
+                    plot_bgcolor: "rgba(0,0,0,0)",
+
+                    scene: {
+                      xaxis: {
+                        title: "Time (seconds)",
+                        color: "#9db5a8",
+                        gridcolor: "#1b3027",
+                        zerolinecolor: "#1b3027",
+                      },
+
+                      yaxis: {
+                        title: "Frequency (Hz)",
+                        color: "#9db5a8",
+                        gridcolor: "#1b3027",
+                        zerolinecolor: "#1b3027",
+                      },
+
+                      zaxis: {
+                        title: "Intensity (dB)",
+                        color: "#9db5a8",
+                        gridcolor: "#1b3027",
+                        zerolinecolor: "#1b3027",
+                      },
+
+                      bgcolor: "rgba(0,0,0,0)",
+
+                      camera: {
+                        eye: {
+                          x: 1.6,
+                          y: 1.6,
+                          z: 1.2,
+                        },
+                      },
+                    },
+
+                    margin: {
+                      l: 0,
+                      r: 0,
+                      t: 50,
+                      b: 0,
+                    },
+
+                    height: 600,
+
+                    font: {
+                      color: "#e8fff2",
+                    },
+                  }}
+                  config={{
+                    responsive: true,
+                    displaylogo: false,
+                    modeBarButtonsToRemove: [
+                      "lasso2d",
+                      "select2d",
+                    ],
+                  }}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <Plot
+                  data={[
+                    {
+                      type: "heatmap",
+                      z: result.visualization.spectrogram,
+                      x: result.visualization.time,
+                      y: result.visualization.frequency,
+                      colorscale: "Viridis",
+                      colorbar: {
+                        title: "dB",
+                      },
+                      hovertemplate:
+                        "Time: %{x:.2f}s" +
+                        "<br>Frequency: %{y:.0f} Hz" +
+                        "<br>Intensity: %{z:.2f} dB" +
+                        "<extra></extra>",
+                    },
+                  ]}
+                  layout={{
+                    title: {
+                      text: "Bird Call Spectrogram",
+                      font: {
+                        color: "#e8fff2",
+                        size: 18,
+                      },
+                    },
+
+                    paper_bgcolor: "rgba(0,0,0,0)",
+                    plot_bgcolor: "rgba(0,0,0,0)",
+
+                    xaxis: {
+                      title: "Time (seconds)",
+                      color: "#9db5a8",
+                      gridcolor: "#1b3027",
+                    },
+
+                    yaxis: {
+                      title: "Frequency (Hz)",
+                      color: "#9db5a8",
+                      gridcolor: "#1b3027",
+                    },
+
+                    margin: {
+                      l: 70,
+                      r: 20,
+                      t: 50,
+                      b: 60,
+                    },
+
+                    height: 550,
+
+                    font: {
+                      color: "#e8fff2",
+                    },
+                  }}
+                  config={{
+                    responsive: true,
+                    displaylogo: false,
+                  }}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              )}
+
+            </div>
+
+            <div className="visualization-help">
+              <span>🖱️ Drag to rotate</span>
+              <span>🔍 Scroll to zoom</span>
+              <span>↻ Double-click to reset</span>
+              <span>✦ Hover for acoustic values</span>
+            </div>
+
+          </section>
+        )}
+
         <section className="how-it-works">
           <span className="section-label">HOW IT WORKS</span>
 

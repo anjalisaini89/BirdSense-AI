@@ -485,4 +485,3 @@ B.Tech CSE — AI & Data Science
 ⭐ If you found BirdSense-AI interesting, consider giving it a star!
 From birdsong → to data → to intelligence. 🐦🌌
 </div>
-```
